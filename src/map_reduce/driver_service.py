@@ -36,10 +36,10 @@ class DriverService(stub.dist_mr_pb2_grpc.MapReduceDriverServicer):
                 request.worker_id, prev_task["file_name"], TaskStatus.IN_PROGRESS.value, 
                 task_type, prev_task["task_id"])
         task_type, next_task = self.driver.get_next_task()
-        print("Recieved next task", next_task)
+        print("Sending next task", next_task)
         task = build_task(task_type, next_task, self.driver.N, self.driver.M)
         self.driver.update_task_status(request.worker_id, task.input_filename, 
                                        TaskStatus.NOT_STARTED.value, task.task_type,
                                        next_task.get("task_id", None))
-        print(request.worker_id, next_task["file_name"])
+        print(request.worker_id, next_task.get("file_name", None))
         return task
