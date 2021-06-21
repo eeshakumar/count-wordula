@@ -1,3 +1,4 @@
+from utils import INTERMEDIATE_DIR, OUTPUT_DIR
 from map_reduce.task_type import TaskType
 from uuid import uuid4
 import grpc
@@ -5,24 +6,15 @@ import stub.dist_mr_pb2 as dist_mr_pb2
 import stub.dist_mr_pb2_grpc as dist_mr_pb2_grpc
 
 from map_reduce.task_status import TaskStatus
-
-
-def do_map():
-    print("Map Task completed...")
-    return
-
-
-def do_reduce():
-    print("Reduce task completed...")
-    return
+from utils import do_map, do_reduce
 
 
 def do_task(assigned_task):
     task_type = assigned_task.task_type
     if task_type == TaskType.MAP.value:
-        do_map()
+        do_map(assigned_task)
     elif task_type == TaskType.REDUCE.value:
-        do_reduce()
+        do_reduce(assigned_task)
     return
 
 
@@ -34,7 +26,7 @@ def main():
     retry = 3
     task_status = TaskStatus.UNDEFINED.value
     # make some call
-    while(True):
+    while(i <= 1):
         assigned_task = stub.GetTask(
             dist_mr_pb2.WorkerStatus(
                 worker_id=worker_id, worker_status=0, 
