@@ -20,6 +20,8 @@ message Task {
     string output_dir = 5;
     int32 N = 6;
     int32 M = 7;
+    int32 map_id = 8;
+    int32 reduce_id = 9;
 }
 
 message ExecutedTask {

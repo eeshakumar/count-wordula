@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\rdist_mr.proto\x12\rcount_wordula\"M\n\x0cWorkerStatus\x12\x11\n\tworker_id\x18\x01 \x01(\t\x12\x15\n\rworker_status\x18\x02 \x01(\x05\x12\x13\n\x0btask_status\x18\x03 \x01(\x05\"\x7f\n\x04Task\x12\x0f\n\x07task_id\x18\x01 \x01(\t\x12\x11\n\ttask_type\x18\x02 \x01(\x05\x12\x11\n\tinput_dir\x18\x03 \x01(\t\x12\x16\n\x0einput_filename\x18\x04 \x01(\t\x12\x12\n\noutput_dir\x18\x05 \x01(\t\x12\t\n\x01N\x18\x06 \x01(\x05\x12\t\n\x01M\x18\x07 \x01(\x05\"`\n\x0c\x45xecutedTask\x12\x0f\n\x07task_id\x18\x01 \x01(\x05\x12\x11\n\ttask_type\x18\x02 \x01(\x05\x12\x17\n\x0foutput_filename\x18\x03 \x01(\t\x12\x13\n\x0btask_status\x18\x04 \x01(\x05\x32P\n\x0fMapReduceDriver\x12=\n\x07GetTask\x12\x1b.count_wordula.WorkerStatus\x1a\x13.count_wordula.Task\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\rdist_mr.proto\x12\rcount_wordula\"M\n\x0cWorkerStatus\x12\x11\n\tworker_id\x18\x01 \x01(\t\x12\x15\n\rworker_status\x18\x02 \x01(\x05\x12\x13\n\x0btask_status\x18\x03 \x01(\x05\"\xa2\x01\n\x04Task\x12\x0f\n\x07task_id\x18\x01 \x01(\t\x12\x11\n\ttask_type\x18\x02 \x01(\x05\x12\x11\n\tinput_dir\x18\x03 \x01(\t\x12\x16\n\x0einput_filename\x18\x04 \x01(\t\x12\x12\n\noutput_dir\x18\x05 \x01(\t\x12\t\n\x01N\x18\x06 \x01(\x05\x12\t\n\x01M\x18\x07 \x01(\x05\x12\x0e\n\x06map_id\x18\x08 \x01(\x05\x12\x11\n\treduce_id\x18\t \x01(\x05\"`\n\x0c\x45xecutedTask\x12\x0f\n\x07task_id\x18\x01 \x01(\x05\x12\x11\n\ttask_type\x18\x02 \x01(\x05\x12\x17\n\x0foutput_filename\x18\x03 \x01(\t\x12\x13\n\x0btask_status\x18\x04 \x01(\x05\x32P\n\x0fMapReduceDriver\x12=\n\x07GetTask\x12\x1b.count_wordula.WorkerStatus\x1a\x13.count_wordula.Task\"\x00\x62\x06proto3'
 )
 
 
@@ -128,6 +128,20 @@ _TASK = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='map_id', full_name='count_wordula.Task.map_id', index=7,
+      number=8, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='reduce_id', full_name='count_wordula.Task.reduce_id', index=8,
+      number=9, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -140,8 +154,8 @@ _TASK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=111,
-  serialized_end=238,
+  serialized_start=112,
+  serialized_end=274,
 )
 
 
@@ -193,8 +207,8 @@ _EXECUTEDTASK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=240,
-  serialized_end=336,
+  serialized_start=276,
+  serialized_end=372,
 )
 
 DESCRIPTOR.message_types_by_name['WorkerStatus'] = _WORKERSTATUS
@@ -232,8 +246,8 @@ _MAPREDUCEDRIVER = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=338,
-  serialized_end=418,
+  serialized_start=374,
+  serialized_end=454,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetTask',
