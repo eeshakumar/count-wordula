@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\rdist_mr.proto\x12\rcount_wordula\"8\n\x0cWorkerStatus\x12\x11\n\tworker_id\x18\x01 \x01(\t\x12\x15\n\rworker_status\x18\x02 \x01(\x05\"\x7f\n\x04Task\x12\x0f\n\x07task_id\x18\x01 \x01(\x05\x12\x11\n\ttask_type\x18\x02 \x01(\x05\x12\x11\n\tinput_dir\x18\x03 \x01(\t\x12\x16\n\x0einput_filename\x18\x04 \x01(\t\x12\x12\n\noutput_dir\x18\x05 \x01(\t\x12\t\n\x01N\x18\x06 \x01(\x05\x12\t\n\x01M\x18\x07 \x01(\x05\"`\n\x0c\x45xecutedTask\x12\x0f\n\x07task_id\x18\x01 \x01(\x05\x12\x11\n\ttask_type\x18\x02 \x01(\x05\x12\x17\n\x0foutput_filename\x18\x03 \x01(\t\x12\x13\n\x0btask_status\x18\x04 \x01(\x05\x32P\n\x0fMapReduceDriver\x12=\n\x07GetTask\x12\x1b.count_wordula.WorkerStatus\x1a\x13.count_wordula.Task\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\rdist_mr.proto\x12\rcount_wordula\"M\n\x0cWorkerStatus\x12\x11\n\tworker_id\x18\x01 \x01(\t\x12\x15\n\rworker_status\x18\x02 \x01(\x05\x12\x13\n\x0btask_status\x18\x03 \x01(\x05\"\x7f\n\x04Task\x12\x0f\n\x07task_id\x18\x01 \x01(\t\x12\x11\n\ttask_type\x18\x02 \x01(\x05\x12\x11\n\tinput_dir\x18\x03 \x01(\t\x12\x16\n\x0einput_filename\x18\x04 \x01(\t\x12\x12\n\noutput_dir\x18\x05 \x01(\t\x12\t\n\x01N\x18\x06 \x01(\x05\x12\t\n\x01M\x18\x07 \x01(\x05\"`\n\x0c\x45xecutedTask\x12\x0f\n\x07task_id\x18\x01 \x01(\x05\x12\x11\n\ttask_type\x18\x02 \x01(\x05\x12\x17\n\x0foutput_filename\x18\x03 \x01(\t\x12\x13\n\x0btask_status\x18\x04 \x01(\x05\x32P\n\x0fMapReduceDriver\x12=\n\x07GetTask\x12\x1b.count_wordula.WorkerStatus\x1a\x13.count_wordula.Task\"\x00\x62\x06proto3'
 )
 
 
@@ -47,6 +47,13 @@ _WORKERSTATUS = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='task_status', full_name='count_wordula.WorkerStatus.task_status', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -60,7 +67,7 @@ _WORKERSTATUS = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=32,
-  serialized_end=88,
+  serialized_end=109,
 )
 
 
@@ -74,8 +81,8 @@ _TASK = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='task_id', full_name='count_wordula.Task.task_id', index=0,
-      number=1, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -133,8 +140,8 @@ _TASK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=90,
-  serialized_end=217,
+  serialized_start=111,
+  serialized_end=238,
 )
 
 
@@ -186,8 +193,8 @@ _EXECUTEDTASK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=219,
-  serialized_end=315,
+  serialized_start=240,
+  serialized_end=336,
 )
 
 DESCRIPTOR.message_types_by_name['WorkerStatus'] = _WORKERSTATUS
@@ -225,8 +232,8 @@ _MAPREDUCEDRIVER = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=317,
-  serialized_end=397,
+  serialized_start=338,
+  serialized_end=418,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetTask',

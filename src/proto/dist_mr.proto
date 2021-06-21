@@ -9,10 +9,11 @@ service MapReduceDriver {
 message WorkerStatus {
     string worker_id = 1;
     int32 worker_status = 2;
+    int32 task_status = 3;
 }
 
 message Task {
-    int32 task_id = 1;
+    string task_id = 1;
     int32 task_type = 2;
     string input_dir = 3;
     string input_filename = 4;
