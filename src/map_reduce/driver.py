@@ -1,9 +1,11 @@
-from collections import defaultdict
+import os
 import uuid
 import multiprocessing
+from itertools import product
 from map_reduce.task_status import TaskStatus
 
 from utils import collect_map_tasks, collect_reduce_tasks
+from utils import INPUT_DIR, OUTPUT_DIR, INTERMEDIATE_DIR
 from map_reduce.task_type import TaskType
 import stub.dist_mr_pb2 as dist_mr_pb2
 
@@ -16,7 +18,17 @@ class Driver(object):
         self.reduce_task_files = []
         self.task_status_manager = multiprocessing.Manager()
         self.task_status = self.task_status_manager.dict()
-        self._all_tasks_complete = False
+
+    def mr_file_storage(self):
+        for n, m in list(product(range(self.N), range(self.M))):
+            path = f"mr-{n}-{m}"
+            with open(os.path.join(INTERMEDIATE_DIR, path), 'a') as f:
+                f.close()
+
+        for m in range(self.M):
+            path = f"out-{m}"
+            with open(os.path.join(OUTPUT_DIR, path), 'a') as f:
+                f.close()
 
     def collect_tasks(self, task_type=TaskType.MAP.value):
         if task_type == TaskType.MAP.value:
@@ -31,27 +43,32 @@ class Driver(object):
     def build_task_status(self, task_type):
         print("Task type", task_type)
         # while building the task all are status 0, no_started
+        new_tasks = self.task_status_manager.list()
         if task_type == TaskType.MAP.value:
             tasks = self.map_task_files
+            for i, task in enumerate(tasks):
+                new_task = {
+                        "task_id": str(uuid.uuid4()),
+                        "file_name": task,
+                        "worked_id": None,
+                        "map_id": i % self.N,
+                    }
+                new_tasks.append(new_task)
+                print("Append", new_tasks)
         elif task_type == TaskType.REDUCE.value:
-            tasks = self.reduce_task_files
+            for m in range(self.M):
+                new_task = {
+                    "task_id": str(uuid.uuid4()),
+                    "worked_id": None,
+                    "reduce_id": m,
+                }
+                new_tasks.append(new_task)
+                print("Append", new_tasks)
         else:
             raise AttributeError(f"Task Type {task_type} not found!")
-
-        print("Tasks found", tasks)
-        new_tasks = self.task_status_manager.list()
-        for task in tasks:
-            new_task = {
-                    "task_id": str(uuid.uuid4()),
-                    "file_name": task,
-                    "worked_id": None,
-                }
-            new_tasks.append(new_task)
-            print("Append", new_tasks)
-
+        
         if self.task_status.get(TaskStatus.NOT_STARTED.value, None) is None:
             self.task_status[TaskStatus.NOT_STARTED.value] = self.task_status_manager.dict()
-        # else:
         print("Task type", task_type)
         self.task_status[TaskStatus.NOT_STARTED.value][task_type] = new_tasks
         print("NA", self.task_status)
@@ -79,8 +96,7 @@ class Driver(object):
  
     def is_reduce_tasks_complete(self):
         # check if all tasks are in status 1, completed
-        return len(self.map_task_files) == \
-            len(self.task_status[TaskStatus.COMPLETED.value][TaskType.REDUCE.value])
+        return self.M == len(self.task_status[TaskStatus.COMPLETED.value][TaskType.REDUCE.value])
 
     def get_next_task(self):
         if not self.is_map_tasks_complete():
@@ -91,7 +107,6 @@ class Driver(object):
         try:
             next_task = self.task_status[TaskStatus.NOT_STARTED.value][task_type].pop(0)
         except IndexError:
-            self._all_tasks_complete = True
             next_task = {}
         return task_type, next_task
 
@@ -119,7 +134,8 @@ class Driver(object):
             print('updated task status', self.task_status)
         
     def get_prev_task_for_worker(self, worker_id, task_status):
-        # if the status is undefined, the worker is just starting execution, and so attempts a map operation
+        # if the status is undefined, the worker is just starting execution, 
+        # and so attempts a map operation
         # TODO; It is possible that all map tasks are exhausted.
         if task_status == TaskStatus.UNDEFINED.value:
             return TaskType.MAP.value, None
@@ -139,5 +155,4 @@ class Driver(object):
         return task_type.value, None
     
     def all_tasks_complete(self):
-        return self._all_tasks_complete
-        # return self.is_map_tasks_complete() #& self.is_reduce_tasks_complete()
+        return self.is_map_tasks_complete() & self.is_reduce_tasks_complete()
