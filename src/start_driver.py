@@ -1,6 +1,6 @@
 from __future__ import print_function
 import logging
-
+import os
 from map_reduce.driver import Driver
 from map_reduce.driver_service import DriverService
 import grpc
@@ -17,20 +17,23 @@ def start_server(port):
     server.add_insecure_port(f"[::]:{port}")
     server.start()
     print("server started")
-    return server
+    return driver, server
 
 
-def stop_server(self, server):
-    # all tasks complete
+def stop_server(server):
     server.stop(0)    
 
 
 def main():
-    server = start_server(50051)
-    server.wait_for_termination()
-    return
+    driver, server = start_server(50051)
+    while(True):
+        if driver.all_tasks_complete():
+            print("All tasks complete! Quitting....")
+            stop_server(server)
+            exit(0)
 
 
 if __name__ == "__main__":
+    print("Current DIR", os.getcwd())
     logging.basicConfig()
     main()
