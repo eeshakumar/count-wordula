@@ -1,6 +1,7 @@
 from __future__ import print_function
 import logging
 import os
+import time
 from map_reduce.driver import Driver
 from map_reduce.driver_service import DriverService
 import grpc
@@ -16,19 +17,21 @@ def start_server(port):
         DriverService(driver=driver), server)
     server.add_insecure_port(f"[::]:{port}")
     server.start()
-    print("server started")
+    print("!!!!server started")
     return driver, server
 
 
 def stop_server(server):
-    server.stop(0)    
+    print("-----------20s Sleep before shutdown----------")
+    time.sleep(60)
+    server.stop(0)
 
 
 def main():
     driver, server = start_server(50051)
     while(True):
         if driver.all_tasks_complete():
-            print("All tasks complete! Quitting....")
+            print("All tasks complete! Quitting...")
             stop_server(server)
             exit(0)
 

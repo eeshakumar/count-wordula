@@ -31,21 +31,24 @@ def main():
     print(worker_id)
     channel = grpc.insecure_channel("localhost" + ':50051')
     stub = dist_mr_pb2_grpc.MapReduceDriverStub(channel)
-    i = 0
+    retry = 3
     task_status = TaskStatus.UNDEFINED.value
     # make some call
-    while(i <= 2):
+    while(True):
         assigned_task = stub.GetTask(
             dist_mr_pb2.WorkerStatus(
                 worker_id=worker_id, worker_status=0, 
                 task_status=task_status), wait_for_ready=True)
         print(assigned_task.task_id, assigned_task.input_filename)
         if not assigned_task.task_id:
-            print("No More Tasks! Quitting....")
-            exit(0)
+            print("No More Tasks! Retrying....")
+            retry -= 1
+            if retry == 0:
+                print("No More Tasks, retries exhausted. Quitting...")
+                exit(0)
         do_task(assigned_task)
+        # TODO: Better resolve this naive assumption, take o/p from map task
         task_status = TaskStatus.COMPLETED.value
-        i += 1
 
 
 if __name__ == "__main__":
