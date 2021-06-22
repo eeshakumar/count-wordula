@@ -13,38 +13,40 @@ INTERMEDIATE_DIR = os.path.join(os.getcwd(), "data/intermediate")
 
 
 def collect_map_tasks():
-    return os.listdir(os.path.join(os.getcwd(), "data/inputs"))
+    return os.listdir(INPUT_DIR)
 
 
 def collect_reduce_tasks():
-    return os.listdir(os.path.join(os.getcwd(), "data/intermediate"))
+    return os.listdir(INTERMEDIATE_DIR)
 
 
 def read_file_linebyline(f):
     return Path(f).read_text().splitlines()
 
 
-def do_map(input_file, M, map_id, input_dir=INPUT_DIR):
+def do_map(input_file, M, map_id, input_dir=INPUT_DIR,
+           output_dir=INTERMEDIATE_DIR):
     if map_id != -1:
         print(f"Working on {input_file} with map id {map_id} and {M} reduceable buckets")
         buckets = defaultdict(list)
-        text = Path(INPUT_DIR, input_file).read_text()
-        all_words = list(re.findall(r"([\w]+['][\w]+)", text))
+        text = Path(input_dir, input_file).read_text()
+        all_words = list(re.findall("(?:\w|['-]\w)+", text))
         for word in all_words:
             buckets[ord(word[0]) % M].append(word)
         for key, value in buckets.items():
             text = "\n".join(value)
-            Path(INTERMEDIATE_DIR, f"mr-{map_id}-{key}").write_text(text)
+            Path(output_dir, f"mr-{map_id}-{key}").write_text(text)
         print(f"Map Task completed for {input_file}")
     return
 
 
-def do_reduce(reduce_id, N):
+def do_reduce(reduce_id, N, input_dir=INTERMEDIATE_DIR,
+              output_dir=OUTPUT_DIR):
     if reduce_id != -1:
         print(f"Working on reducing {N} mapped tasks for reduce id {reduce_id}")
         files_to_reduce = []
         for n in range(N):
-            files_to_reduce.append(os.path.join(INTERMEDIATE_DIR, f"mr-{n}-{reduce_id}"))
+            files_to_reduce.append(os.path.join(input_dir, f"mr-{n}-{reduce_id}"))
         # all_words = []
         # start = time.time()
         # with Pool(5) as p:
@@ -53,7 +55,7 @@ def do_reduce(reduce_id, N):
         for f in files_to_reduce:
             all_words += Path(f).read_text().splitlines()
         word_counts = Counter(all_words)
-        output_file = os.path.join(OUTPUT_DIR, f"out-{reduce_id}")
+        output_file = os.path.join(output_dir, f"out-{reduce_id}")
         with open(output_file, 'w+') as f:
             for word, count in word_counts.items():
                 f.write(f"{word} {count}\n")
