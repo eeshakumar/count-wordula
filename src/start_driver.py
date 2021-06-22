@@ -17,12 +17,17 @@ def start_server(port, driver):
         DriverService(driver=driver), server)
     server.add_insecure_port(f"[::]:{port}")
     server.start()
+    print("-----------SERVER STARTED----------")
     return server
 
 
-def stop_server(server):
-    print("-----------20s wait before shutdown----------")
+def stop_server(server, driver):
+    print("-----------20s before shutdown----------")
     time.sleep(20)
+    print("----------COMPLETED TASKS-----------")
+    driver.print_completed_tasks_report()
+    print("----------COMPLETED TASKS-----------")
+    print("-----------SERVER STOPPED----------")
     server.stop(0)
 
 
@@ -32,7 +37,7 @@ def main(args):
     while(True):
         if driver.all_tasks_complete():
             print("All tasks complete! Quitting...")
-            stop_server(server)
+            stop_server(server, driver)
             exit(0)
 
 
