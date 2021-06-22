@@ -1,5 +1,6 @@
 import os
 import uuid
+import yaml
 import multiprocessing
 from itertools import product
 from map_reduce.task_status import TaskStatus
@@ -41,7 +42,7 @@ class Driver(object):
             raise AttributeError(f"Task Type {task_type} not found!")
 
     def build_task_status(self, task_type):
-        print("Task type", task_type)
+        # print("Task type", task_type)
         # while building the task all are status 0, no_started
         new_tasks = self.task_status_manager.list()
         if task_type == TaskType.MAP.value:
@@ -54,7 +55,7 @@ class Driver(object):
                         "map_id": i % self.N,
                     }
                 new_tasks.append(new_task)
-                print("Append", new_tasks)
+                # print("Append", new_tasks)
         elif task_type == TaskType.REDUCE.value:
             for m in range(self.M):
                 new_task = {
@@ -63,21 +64,21 @@ class Driver(object):
                     "reduce_id": m,
                 }
                 new_tasks.append(new_task)
-                print("Append", new_tasks)
+                # print("Append", new_tasks)
         else:
             raise AttributeError(f"Task Type {task_type} not found!")
         
         if self.task_status.get(TaskStatus.NOT_STARTED.value, None) is None:
             self.task_status[TaskStatus.NOT_STARTED.value] = self.task_status_manager.dict()
-        print("Task type", task_type)
+        # print("Task type", task_type)
         self.task_status[TaskStatus.NOT_STARTED.value][task_type] = new_tasks
-        print("NA", self.task_status)
+        # print("NA", self.task_status)
 
         # empty complete and in progress
         if self.task_status.get(TaskStatus.COMPLETED.value, None) is None:
             self.task_status[TaskStatus.COMPLETED.value] = self.task_status_manager.dict()
         # else
-        print("Task type", task_type)
+        # print("Task type", task_type)
         self.task_status[TaskStatus.COMPLETED.value][task_type] = self.task_status_manager.list()
 
         if self.task_status.get(TaskStatus.IN_PROGRESS.value, None) is None:
@@ -85,9 +86,9 @@ class Driver(object):
         # else:
         self.task_status[TaskStatus.IN_PROGRESS.value][task_type] = self.task_status_manager.list()
 
-        print()
-        print()
-        print("FINAL", self.task_status)
+        # print()
+        # print()
+        # print("FINAL", self.task_status)
 
     def is_map_tasks_complete(self):
         # check if all tasks are in status 1, completed
@@ -118,20 +119,20 @@ class Driver(object):
                 new_status = TaskStatus.COMPLETED.value
         
             tasks = self.task_status[new_status][task_type]
-            print("Before update", tasks)
-            print()
-            print("Before update task status", self.task_status)
+            # print("Before update", tasks)
+            # print()
+            # print("Before update task status", self.task_status)
             tasks.append({
                 "task_id": task_id,
                 "file_name": filename,
                 "worker_id": worker_id
             })
-            print("After update", tasks)
+            # print("After update", tasks)
             if self.task_status.get(new_status, None) is None:
                 self.task_status[new_status]= {task_type: tasks}
             else:
                 self.task_status[new_status][task_type] = tasks
-            print('updated task status', self.task_status)
+            # print('updated task status', self.task_status)
         
     def get_prev_task_for_worker(self, worker_id, task_status):
         # if the status is undefined, the worker is just starting execution, 
@@ -143,16 +144,21 @@ class Driver(object):
         for task_type in TaskType:
             in_progress_tasks = self.task_status[TaskStatus.IN_PROGRESS.value].get(task_type.value, 
                                                  self.task_status_manager.list())
-            print("In prgress tasks", in_progress_tasks)
+            # print("In prgress tasks", in_progress_tasks)
             for i, in_progress_task in enumerate(in_progress_tasks):
                 if worker_id == in_progress_task["worker_id"]:
-                    print('Found previous task!!!!')
+                    # print('Found previous task!!!!')
                     try:
                         prev_task = self.task_status[TaskStatus.IN_PROGRESS.value][task_type.value].pop(i)
                         return task_type.value, prev_task
                     except IndexError:
                         break
-        return task_type.value, None
+        return task_type.value, prev_task
     
     def all_tasks_complete(self):
         return self.is_map_tasks_complete() & self.is_reduce_tasks_complete()
+
+    def print_completed_tasks_report(self):
+        print(self.task_status[TaskStatus.COMPLETED.value][0])
+        print("----------------------------------------------")
+        print(self.task_status[TaskStatus.COMPLETED.value][1])

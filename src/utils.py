@@ -69,5 +69,5 @@ def do_reduce(reduce_id, N, input_dir=INTERMEDIATE_DIR,
         with open(output_file, 'w+') as f:
             for word, count in word_counts.items():
                 f.write(f"{word} {count}\n")
-        print(f"Reduce task completed for {reduce_id}")
+        print(f"Reduce task completed for reduce id {reduce_id}")
     return
