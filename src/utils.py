@@ -5,11 +5,21 @@ from pathlib import Path
 from collections import Counter, defaultdict
 from itertools import chain
 import time
-
+from argparse import ArgumentParser
 
 INPUT_DIR = os.path.join(os.getcwd(), "data/inputs")
 OUTPUT_DIR = os.path.join(os.getcwd(), "data/outputs")
 INTERMEDIATE_DIR = os.path.join(os.getcwd(), "data/intermediate")
+
+
+def driver_arg_parse(parser=None):
+    if parser is None:
+        parser = ArgumentParser()
+    parser.add_argument("-n", type=int, default=5,
+                        help="Number of Map operations")
+    parser.add_argument("-m", type=int, default=5,
+                        help="Number of Reduce operations")
+    return parser
 
 
 def collect_map_tasks():
