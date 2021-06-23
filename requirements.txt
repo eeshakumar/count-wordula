@@ -1,5 +1,4 @@
-pandas
-numpy
 pyyaml
 grpcio
 grpcio-tools
+pytest
