@@ -1,7 +1,7 @@
 import filecmp
 import os
 from unittest import TestCase
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 import unittest
 
@@ -18,32 +18,40 @@ class MapReduceTests(TestCase):
     def test_map_operation(self):
         # test consistency of map operation
         input_file = "test.txt"
+        same_input_another_file = "same_test.txt"
         map_id = 0
         another_map_id = 1
         M = 2
         do_map(input_file, M, map_id, self.input_dir, self.intermediate_dir)
-        do_map(input_file, M, another_map_id, self.input_dir, self.intermediate_dir)
+        do_map(same_input_another_file, M, another_map_id, self.input_dir, self.intermediate_dir)
         for m in range(M):
             words = Path(self.intermediate_dir, f"mr-{map_id}-{m}").read_text()
             other_words = Path(self.intermediate_dir, f"mr-{another_map_id}-{m}").read_text()
             self.assertEqual(sorted(words), sorted(other_words))
     
-
-    def test_reduce_operation(self):
-        # test accuracy of reduce operation
+    def reduce_operation(self, reduce_id):
+        # evaluate accuract of reduce operation
         N = 2
         map_files = []
-        another_map_files = []
-        reduce_id = 0
-        another_reduce_id = 1
+        words = []
         for n in range(N):
             map_files.append(f"mr-{n}-{reduce_id}")
-            another_map_files.append(f"mr-{n}-{another_reduce_id}")
+            words += Path(self.intermediate_dir, f"mr-{n}-{reduce_id}").read_text().split()
         do_reduce(reduce_id, N, self.intermediate_dir, self.output_dir)
-        do_reduce(another_reduce_id, N, self.intermediate_dir, self.output_dir)
-        reduced_file = os.path.join(self.output_dir, f"out-{reduce_id}")
-        another_reduce_file = os.path.join(self.output_dir, f"out-{another_reduce_id}")
-        filecmp.cmp(reduced_file, another_reduce_file, shallow=True)
+        expected_word_count = Counter(words)
+        reduced_result = Path(self.output_dir, f"out-{reduce_id}").read_text()
+        reduced_word_count = {}
+        for line in reduced_result.splitlines():
+            if line:
+                word, count = line.split()
+                reduced_word_count[word] = int(count)
+        self.assertEqual(expected_word_count, reduced_word_count)
+
+    def test_reduce_operation_general(self):
+        self.reduce_operation(0)
+
+    def test_reduce_operation_special(self):
+        self.reduce_operation(1)
 
 
 if __name__ == "__main__":
