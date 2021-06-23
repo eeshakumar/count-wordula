@@ -35,15 +35,29 @@ A distributed map reduce implementation for word counting using gRPC for communi
 
 Once the repo is cloned, please create the virtual env, install pkgs and activate the venv. Setup might be necessary to register the package.
 
+### Data
+
+Provided input data is stored in src/data/inputs. 
+
+### Scripts
+
+There are two scripts, one to start the driver and one to start the worker. The driver script is configured with an argument parser that takes two values for N number of map operations and M number of reduce operations. The default values for these are N=5 and M=5. More information can be found at 
+- python3 -m start_driver --help
+
+
 ### Driver Worker Execution
 
+- cd to the src directory
 - Open multiple terminal windows.
 - The driver script can be started with start_driver.py
+  - python3 -m start_driver
 - The worker scripts can be started with start_worker.py
+  - python3 -m start_worker
 - The worker should print task request id and operation as it processes the tasks.
 - Once complete, the driver will wait 20s and shutdown.
-- The workers will quit when they do not recieve new tasks from the driver (after retries).
+- The workers will quit when they do not recieve new tasks from the driver (after retries). Default number of retries is 3.
 
 ### Tests
 
-Tests are present in test to verify the correctness of the map and reduce operations.
+Tests are present in test to verify the correctness of the map and reduce operations. These can be found at test/
+- PYTHONPATH=. pytest -ssv
