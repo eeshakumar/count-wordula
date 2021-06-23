@@ -45,7 +45,7 @@ def main():
                 print("No More Tasks, retries exhausted. Quitting...")
                 exit(0)
         do_task(assigned_task)
-        # TODO: Better resolve this naive assumption, take o/p from map task
+        # task is assumed complete
         task_status = TaskStatus.COMPLETED.value
 
 
