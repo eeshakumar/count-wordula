@@ -4,6 +4,7 @@ import yaml
 import multiprocessing
 from itertools import product
 from map_reduce.task_status import TaskStatus
+from pathlib import Path
 
 from utils import collect_map_tasks, collect_reduce_tasks
 from utils import INPUT_DIR, OUTPUT_DIR, INTERMEDIATE_DIR
@@ -21,14 +22,16 @@ class Driver(object):
         self.task_status = self.task_status_manager.dict()
 
     def mr_file_storage(self):
+        Path(INTERMEDIATE_DIR).mkdir(parents=True, exist_ok=True)
         for n, m in list(product(range(self.N), range(self.M))):
             path = f"mr-{n}-{m}"
-            with open(os.path.join(INTERMEDIATE_DIR, path), 'a') as f:
+            with open(os.path.join(INTERMEDIATE_DIR, path), 'w') as f:
                 f.close()
 
+        Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
         for m in range(self.M):
             path = f"out-{m}"
-            with open(os.path.join(OUTPUT_DIR, path), 'a') as f:
+            with open(os.path.join(OUTPUT_DIR, path), 'w') as f:
                 f.close()
 
     def collect_tasks(self, task_type=TaskType.MAP.value):

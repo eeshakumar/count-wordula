@@ -18,7 +18,7 @@ def do_task(assigned_task):
         do_map(assigned_task.input_filename,
                assigned_task.M, assigned_task.map_id)
     elif task_type == TaskType.REDUCE.value:
-        print(f"Recieved map task: {assigned_task.task_id} "
+        print(f"Recieved reduce task: {assigned_task.task_id} "
               f"with ID: {assigned_task.reduce_id}")
         do_reduce(assigned_task.reduce_id, assigned_task.N)
     return

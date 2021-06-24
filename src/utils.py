@@ -45,7 +45,10 @@ def do_map(input_file, M, map_id, input_dir=INPUT_DIR,
             buckets[ord(word[0]) % M].append(word)
         for key, value in buckets.items():
             text = "\n".join(value)
-            Path(output_dir, f"mr-{map_id}-{key}").write_text(text)
+            path = Path(output_dir, f"mr-{map_id}-{key}")
+            with path.open("a") as f:
+                f.write(text)
+                f.write("\n")
         print(f"Map Task completed for {input_file}")
     return
 
