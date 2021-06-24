@@ -23,7 +23,6 @@ class MapReduceTests(TestCase):
                           for d in [self.intermediate_dir,
                                     self.output_dir]
                           for f in os.listdir(d)]
-        print(files_to_clear)
         for f in files_to_clear:
             open(f, "w").close()
 

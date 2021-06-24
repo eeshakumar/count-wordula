@@ -1,6 +1,5 @@
 import os
 import uuid
-import yaml
 import multiprocessing
 from itertools import product
 from map_reduce.task_status import TaskStatus

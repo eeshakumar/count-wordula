@@ -1,4 +1,3 @@
-pyyaml
 grpcio
 grpcio-tools
 pytest
