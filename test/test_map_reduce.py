@@ -14,8 +14,21 @@ class MapReduceTests(TestCase):
         self.input_dir = os.path.join(os.getcwd(), "test/data/test_inputs")
         self.intermediate_dir = os.path.join(os.getcwd(), "test/data/test_intermediate")
         self.output_dir = os.path.join(os.getcwd(), "test/data/test_outputs")
+        self.expected_output_dir = os.path.join(os.getcwd(), 
+                                                "test/data/test_expected_outputs")
+    
+    def clear_files(self):
+        # clean files in directories
+        files_to_clear = [os.path.join(d, f)
+                          for d in [self.intermediate_dir,
+                                    self.output_dir]
+                          for f in os.listdir(d)]
+        print(files_to_clear)
+        for f in files_to_clear:
+            open(f, "w").close()
 
     def test_map_operation(self):
+        self.clear_files()
         # test consistency of map operation
         input_file = "test.txt"
         same_input_another_file = "same_test.txt"
